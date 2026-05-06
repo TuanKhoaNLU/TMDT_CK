@@ -1,7 +1,7 @@
 # TMDT_CK
 
 - Backend: Spring Boot (REST API)
-- Frontend: HTML + CSS + JavaScrip
+- Frontend: React + Vite
 
 ## 1) Yeu cau moi truong
 
@@ -15,7 +15,7 @@ java -version
 mvn -version
 ```
 
-## 2) Chay project
+## 2) Chay backend + frontend
 
 Tu thu muc goc project:
 
@@ -24,15 +24,32 @@ cd D:\TMDT\TMDT_CK
 mvn spring-boot:run
 ```
 
-Neu chay thanh cong, man hinh se hien thi Spring Boot start o port `8080`.
+Lenh tren se tu dong build React trong `frontend/` va serve ban build qua Spring Boot.
+Neu chay thanh cong, ung dung se o `http://localhost:8080`.
+Toi uu da bat: chi build lai frontend khi file trong `frontend/src`, `frontend/public` hoac cac file cau hinh frontend thay doi.
 
-## 3) Truy cap ung dung
+## 3) Chay frontend React dev mode (tuy chon)
+
+Tu terminal moi:
+
+```bash
+cd D:\TMDT\TMDT_CK\frontend
+npm install
+npm run dev
+```
+
+Frontend mac dinh chay o `http://localhost:5173`.
+Vite da proxy `/api/*` ve backend `http://localhost:8080`, vi vay can bat backend neu muon goi API that.
+
+## 4) Truy cap ung dung
 
 Mo trinh duyet:
 
-- Trang chinh: http://localhost:8080/
+- Frontend React (dev mode): http://localhost:5173/
+- Frontend React (Spring Boot serve): http://localhost:8080/
+- Backend API: http://localhost:8080/api/products
 
-## 4) Danh sach trang giao dien
+## 5) Danh sach route giao dien React
 
 - `/` - Card Discovery
 - `/login.html` - Login
@@ -44,7 +61,7 @@ Mo trinh duyet:
 - `/progress-check.html` - Progress Check
 - `/wishlist.html` - Wishlist
 
-## 5) API co ban (de test)
+## 6) API co ban (de test)
 
 - `GET /api/products`
 - `GET /api/orders`
@@ -54,14 +71,14 @@ Co the test bang trinh duyet hoac Postman:
 - http://localhost:8080/api/products
 - http://localhost:8080/api/orders
 
-## 6) Build file jar
+## 7) Build file jar
 
 ```bash
 mvn clean package
 java -jar target/TMDT_CK-0.0.1-SNAPSHOT.jar
 ```
 
-## 7) Loi thuong gap
+## 8) Loi thuong gap
 
 - Loi `JAVA_HOME`:
   - Kiem tra bien moi truong Java da tro dung JDK.
@@ -69,17 +86,15 @@ java -jar target/TMDT_CK-0.0.1-SNAPSHOT.jar
   - Doi port trong file `src/main/resources/application.properties` (vi du `server.port=8081`).
 - Maven khong tai duoc dependency:
   - Kiem tra ket noi internet/proxy va chay lai `mvn -U clean package`.
+- Frontend khong goi duoc API:
+  - Dam bao backend dang chay o port `8080`.
+- Frontend van bi build lai sau `mvn clean ...`:
+  - Day la hanh vi binh thuong vi `clean` xoa file hash trong `target/`.
 
-## 8) Dinh huong mo rong tiep
 
-- Chuyen du lieu in-memory sang MySQL/PostgreSQL
-- Mapping day du theo `E-commerce db.pdf`
-- Them dang nhap/phan quyen (buyer, artisan, admin)
-- Them gio hang, thanh toan, ton kho, custom request workflow
+## 9) Quy uoc UI
 
-## 9) Quy uoc UI de tai su dung
-
-Toan bo mau sac va kich thuoc giao dien da duoc dinh nghia trong `src/main/resources/static/styles.css` bang CSS variables (`:root`).
+Toan bo mau sac va kich thuoc giao dien da duoc dinh nghia trong `frontend/src/styles.css` bang CSS variables (`:root`).
 
 ### Design tokens (hang so)
 - Mau: `--color-*` (vi du `--color-action-primary`, `--color-bg-surface`)
