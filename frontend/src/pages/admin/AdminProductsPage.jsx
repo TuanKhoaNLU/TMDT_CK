@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchAdminProducts, updateAdminProductStatus } from "../../api.js";
+import { formatVnd } from "../../utils/format.js";
 
 export default function AdminProductsPage() {
   const [items, setItems] = useState([]);
@@ -8,7 +9,7 @@ export default function AdminProductsPage() {
   const load = () => {
     fetchAdminProducts()
       .then(setItems)
-      .catch(() => setError("Khong tai duoc san pham."));
+      .catch(() => setError("Không tải được sản phẩm."));
   };
 
   useEffect(load, []);
@@ -19,23 +20,23 @@ export default function AdminProductsPage() {
       await updateAdminProductStatus(id, next);
       load();
     } catch {
-      setError("Khong cap nhat duoc trang thai.");
+      setError("Không cập nhật được trạng thái.");
     }
   };
 
   return (
     <main className="container page-padding">
-      <h1>Kiem duyet san pham</h1>
+      <h1>Kiểm duyệt sản phẩm</h1>
       {error && <p className="panel">{error}</p>}
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Ten</th>
-            <th>Danh muc</th>
-            <th>Gia</th>
-            <th>Shop</th>
-            <th>Trang thai</th>
+            <th>Mã</th>
+            <th>Tên</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Cửa hàng</th>
+            <th>Trạng thái</th>
             <th></th>
           </tr>
         </thead>
@@ -45,7 +46,7 @@ export default function AdminProductsPage() {
               <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.category}</td>
-              <td>${Number(item.price).toFixed(2)}</td>
+              <td>{formatVnd(item.price)}</td>
               <td>{item.shopId}</td>
               <td>
                 <span className={`badge ${item.status === "ACTIVE" ? "ok" : "off"}`}>
@@ -53,8 +54,11 @@ export default function AdminProductsPage() {
                 </span>
               </td>
               <td>
-                <button className="btn ghost" onClick={() => toggle(item.id, item.status)}>
-                  {item.status === "ACTIVE" ? "An" : "Hien"}
+                <button
+                  className="btn ghost"
+                  onClick={() => toggle(item.id, item.status)}
+                >
+                  {item.status === "ACTIVE" ? "Ẩn" : "Hiện"}
                 </button>
               </td>
             </tr>

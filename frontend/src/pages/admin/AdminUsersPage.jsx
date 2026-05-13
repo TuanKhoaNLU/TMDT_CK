@@ -12,24 +12,24 @@ export default function AdminUsersPage() {
         setUsers(u);
         setShops(s);
       })
-      .catch(() => setError("Khong tai duoc danh sach."));
+      .catch(() => setError("Không tải được danh sách."));
   }, []);
 
   const shopName = (shopId) => shops.find((s) => s.id === shopId)?.name ?? "-";
 
   return (
     <main className="container page-padding">
-      <h1>Quan ly nguoi dung</h1>
+      <h1>Quản lý người dùng</h1>
       {error && <p className="panel">{error}</p>}
-      <h2>Users</h2>
+      <h2>Người dùng</h2>
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Ten</th>
+            <th>Mã</th>
+            <th>Họ tên</th>
             <th>Email</th>
-            <th>Vai tro</th>
-            <th>Shop</th>
+            <th>Vai trò</th>
+            <th>Cửa hàng</th>
           </tr>
         </thead>
         <tbody>
@@ -38,22 +38,24 @@ export default function AdminUsersPage() {
               <td>{u.id}</td>
               <td>{u.fullName}</td>
               <td>{u.email}</td>
-              <td><span className="badge ok">{u.role}</span></td>
+              <td>
+                <span className="badge ok">{u.role}</span>
+              </td>
               <td>{u.shopId ? shopName(u.shopId) : "-"}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <h2 className="mt-8">Shops</h2>
+      <h2 className="mt-8">Cửa hàng</h2>
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Ten shop</th>
-            <th>Chu</th>
-            <th>Mo ta</th>
-            <th>Dia chi</th>
+            <th>Mã</th>
+            <th>Tên cửa hàng</th>
+            <th>Chủ cửa hàng</th>
+            <th>Mô tả</th>
+            <th>Địa chỉ</th>
           </tr>
         </thead>
         <tbody>

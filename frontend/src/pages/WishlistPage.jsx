@@ -7,14 +7,16 @@ export default function WishlistPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchProducts().then(setProducts).catch(() => {
-      setError("Khong the tai danh sach wishlist.");
-    });
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => {
+        setError("Không thể tải danh sách yêu thích.");
+      });
   }, []);
 
   return (
     <main className="container page-padding">
-      <h1>Saved Treasures</h1>
+      <h1>Sản phẩm yêu thích</h1>
       {error ? <p className="panel">{error}</p> : <ProductGrid products={products} />}
     </main>
   );

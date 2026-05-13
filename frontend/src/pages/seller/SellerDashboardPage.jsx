@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchSellerDashboard, fetchSellerProfile } from "../../api.js";
 import { useSeller } from "../../context/useSeller.js";
+import { formatVnd } from "../../utils/format.js";
 
 export default function SellerDashboardPage() {
   const { shopId } = useSeller();
@@ -14,22 +15,34 @@ export default function SellerDashboardPage() {
         setStats(s);
         setShop(sh);
       })
-      .catch(() => setError("Khong tai duoc dashboard."));
+      .catch(() => setError("Không tải được tổng quan."));
   }, [shopId]);
 
-  if (error) return <main className="container page-padding"><p className="panel">{error}</p></main>;
-  if (!stats || !shop) return <main className="container page-padding"><p>Dang tai...</p></main>;
+  if (error) {
+    return (
+      <main className="container page-padding">
+        <p className="panel">{error}</p>
+      </main>
+    );
+  }
+  if (!stats || !shop) {
+    return (
+      <main className="container page-padding">
+        <p>Đang tải...</p>
+      </main>
+    );
+  }
 
   const cards = [
-    { label: "Tong san pham", value: stats.totalProducts },
-    { label: "Tong don hang", value: stats.totalOrders },
-    { label: "Doanh thu", value: `$${Number(stats.totalRevenue).toFixed(2)}` },
-    { label: "Custom Request", value: stats.totalCustomRequests },
+    { label: "Tổng sản phẩm", value: stats.totalProducts },
+    { label: "Tổng đơn hàng", value: stats.totalOrders },
+    { label: "Doanh thu", value: formatVnd(stats.totalRevenue) },
+    { label: "Yêu cầu đặt riêng", value: stats.totalCustomRequests },
   ];
 
   return (
     <main className="container page-padding">
-      <h1>Seller Dashboard</h1>
+      <h1>Tổng quan cửa hàng</h1>
       <p className="muted">
         {shop.name} - {shop.ownerName}
       </p>

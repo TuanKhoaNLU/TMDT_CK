@@ -4,10 +4,10 @@ import { fetchAdminUsers } from "../api.js";
 import { useAuth } from "../context/useAuth.js";
 
 const MOCK_ACCOUNTS = [
-  { id: 3, label: "Buyer - Elon Musk" },
-  { id: 1, label: "Seller - Khoa Pham" },
-  { id: 2, label: "Seller - Khang Pham" },
-  { id: 4, label: "Admin" },
+  { id: 3, label: "Người mua - Elon Musk" },
+  { id: 1, label: "Người bán - Khoa Phạm" },
+  { id: 2, label: "Người bán - Khang Phạm" },
+  { id: 4, label: "Quản trị viên" },
 ];
 
 const DEMO_EMAILS = [
@@ -48,12 +48,12 @@ export default function LoginPage() {
       const users = await fetchAdminUsers();
       const target = users.find((u) => u.id === accountId);
       if (!target) {
-        setError("Khong tim thay tai khoan tren server.");
+        setError("Không tìm thấy tài khoản trên máy chủ.");
         return;
       }
       loginByUser(target);
     } catch {
-      setError("Khong ket noi duoc server.");
+      setError("Không kết nối được máy chủ.");
     } finally {
       setSubmitting(false);
     }
@@ -64,11 +64,11 @@ export default function LoginPage() {
     setError("");
     const email = form.email.trim().toLowerCase();
     if (!email) {
-      setError("Vui long nhap email.");
+      setError("Vui lòng nhập email.");
       return;
     }
     if (!form.password) {
-      setError("Vui long nhap mat khau (mock - nhap gi cung duoc).");
+      setError("Vui lòng nhập mật khẩu (chế độ thử nghiệm, nhập gì cũng được).");
       return;
     }
     setSubmitting(true);
@@ -76,12 +76,12 @@ export default function LoginPage() {
       const users = await fetchAdminUsers();
       const target = users.find((u) => u.email.toLowerCase() === email);
       if (!target) {
-        setError("Khong tim thay user voi email nay.");
+        setError("Không tìm thấy tài khoản với email này.");
         return;
       }
       loginByUser(target);
     } catch {
-      setError("Khong ket noi duoc server.");
+      setError("Không kết nối được máy chủ.");
     } finally {
       setSubmitting(false);
     }
@@ -89,31 +89,30 @@ export default function LoginPage() {
 
   return (
     <main className="container login-container">
-      <h1>Welcome</h1>
+      <h1>Chào mừng trở lại</h1>
       <p className="muted">
-        Dang nhap bang email co san. Mock auth chua kiem tra mat khau.
+        Đăng nhập bằng email có sẵn. Hệ thống đang ở chế độ thử nghiệm, chưa kiểm tra
+        mật khẩu.
       </p>
       <form className="panel" onSubmit={handleSubmit}>
         <input
-          placeholder="Email Address"
+          placeholder="Địa chỉ email"
           type="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           autoComplete="email"
         />
         <input
-          placeholder="Password"
+          placeholder="Mật khẩu"
           type="password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
           autoComplete="current-password"
         />
         <button className="btn full-width" type="submit" disabled={submitting}>
-          {submitting ? "Dang xu ly..." : "Sign In"}
+          {submitting ? "Đang xử lý..." : "Đăng nhập"}
         </button>
-        <p className="muted small mt-8">
-          Email demo co the dung:
-        </p>
+        <p className="muted small mt-8">Các email demo có thể dùng:</p>
         <ul className="muted small demo-emails">
           {DEMO_EMAILS.map((e) => (
             <li key={e}>
@@ -123,8 +122,8 @@ export default function LoginPage() {
         </ul>
       </form>
       <div className="panel mt-8">
-        <h3>Quick login</h3>
-        <p className="muted small">Bam de dang nhap nhanh khong can email.</p>
+        <h3>Đăng nhập nhanh</h3>
+        <p className="muted small">Bấm để đăng nhập nhanh, không cần nhập email.</p>
         <div className="role-grid">
           {MOCK_ACCOUNTS.map((acc) => (
             <button
@@ -140,8 +139,8 @@ export default function LoginPage() {
         {error && <p className="muted mt-8">{error}</p>}
         {user && (
           <p className="muted mt-8">
-            Dang dang nhap: <strong>{user.fullName}</strong> ({user.role}
-            {user.shopId ? ` - Shop #${user.shopId}` : ""})
+            Đang đăng nhập: <strong>{user.fullName}</strong> ({user.role}
+            {user.shopId ? ` - Cửa hàng #${user.shopId}` : ""})
           </p>
         )}
       </div>

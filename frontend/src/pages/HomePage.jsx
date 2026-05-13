@@ -7,17 +7,20 @@ export default function HomePage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchProducts().then(setProducts).catch(() => {
-      setError("Khong the tai danh sach san pham.");
-    });
+    fetchProducts()
+      .then(setProducts)
+      .catch(() => {
+        setError("Không thể tải danh sách sản phẩm.");
+      });
   }, []);
 
   return (
     <main className="container">
       <section className="hero">
-        <h1>Curated Handmade Templates</h1>
+        <h1>Sản phẩm thủ công tuyển chọn</h1>
         <p className="muted">
-          Marketplace model cho san pham handmade, ho tro mua san va dat custom.
+          Sàn dành cho sản phẩm handmade Việt Nam, hỗ trợ mua sẵn và đặt làm theo
+          yêu cầu.
         </p>
       </section>
       {error ? <p className="panel">{error}</p> : <ProductGrid products={products} />}

@@ -16,7 +16,7 @@ export default function AdminShell() {
         <div className="container topbar">
           <div className="nav-left">
             <NavLink className="brand" to="/admin" end>
-              ArtisanCurator Admin
+              ArtisanCurator · Quản trị
             </NavLink>
           </div>
           <div className="nav-right">
@@ -26,14 +26,14 @@ export default function AdminShell() {
               </span>
             )}
             <button className="btn ghost btn-link" onClick={handleLogout}>
-              Logout
+              Đăng xuất
             </button>
           </div>
         </div>
       </header>
       <Outlet />
       <footer>
-        <div className="container muted">© 2026 The Artisanal Curator - Admin</div>
+        <div className="container muted">© 2026 ArtisanCurator · Quản trị</div>
       </footer>
     </>
   );

@@ -5,8 +5,8 @@ import {
   fetchCustomRequestQuotes,
   fetchCustomRequests,
 } from "../api.js";
-
-const DEFAULT_BUYER = { id: 3, name: "Eleanor Varce" };
+import { useAuth } from "../context/useAuth.js";
+import { formatVnd } from "../utils/format.js";
 
 const emptyForm = {
   shopId: 1,
@@ -16,6 +16,7 @@ const emptyForm = {
 };
 
 export default function CustomizePage() {
+  const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [quotes, setQuotes] = useState({});
   const [form, setForm] = useState(emptyForm);
@@ -23,10 +24,11 @@ export default function CustomizePage() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+    if (!user) return;
     let cancelled = false;
     (async () => {
       try {
-        const list = await fetchCustomRequests({ buyerId: DEFAULT_BUYER.id });
+        const list = await fetchCustomRequests({ buyerId: user.id });
         if (cancelled) return;
         setItems(list);
         const quoteEntries = await Promise.all(
@@ -35,29 +37,30 @@ export default function CustomizePage() {
         if (cancelled) return;
         setQuotes(Object.fromEntries(quoteEntries));
       } catch {
-        if (!cancelled) setError("Khong tai duoc danh sach custom request.");
+        if (!cancelled) setError("Không tải được danh sách yêu cầu đặt riêng.");
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [refreshKey]);
+  }, [refreshKey, user]);
 
   const refresh = () => setRefreshKey((k) => k + 1);
 
   const submit = async (event) => {
     event.preventDefault();
+    if (!user) return;
     try {
       await createCustomRequest({
         ...form,
-        buyerId: DEFAULT_BUYER.id,
-        buyerName: DEFAULT_BUYER.name,
+        buyerId: user.id,
+        buyerName: user.fullName,
         budget: Number(form.budget),
       });
       setForm(emptyForm);
       refresh();
     } catch {
-      setError("Khong gui duoc yeu cau.");
+      setError("Không gửi được yêu cầu.");
     }
   };
 
@@ -66,7 +69,7 @@ export default function CustomizePage() {
       await acceptQuote(requestId, quoteId);
       refresh();
     } catch {
-      setError("Khong duyet duoc bao gia.");
+      setError("Không duyệt được báo giá.");
     }
   };
 
@@ -74,69 +77,77 @@ export default function CustomizePage() {
     <main className="container page-padding">
       <div className="two-col">
         <section className="panel">
-          <h2>Custom Studio</h2>
-          <p className="muted">Gui yeu cau dat lam thu cong rieng cho shop.</p>
+          <h2>Đặt làm theo yêu cầu</h2>
+          <p className="muted">Gửi yêu cầu đặt riêng cho cửa hàng thủ công.</p>
           <form onSubmit={submit}>
             <input
-              placeholder="Tieu de"
+              placeholder="Tiêu đề"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               required
             />
             <textarea
               rows="4"
-              placeholder="Mo ta chi tiet (mau sac, kich thuoc, ngay can)"
+              placeholder="Mô tả chi tiết (màu sắc, kích thước, ngày cần)"
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               required
             />
             <input
               type="number"
-              placeholder="Ngan sach ($)"
+              placeholder="Ngân sách (vnd)"
               value={form.budget}
               onChange={(e) => setForm({ ...form, budget: e.target.value })}
               required
             />
             <input
               type="number"
-              placeholder="Shop ID"
+              placeholder="Mã cửa hàng"
               value={form.shopId}
               onChange={(e) => setForm({ ...form, shopId: Number(e.target.value) })}
               required
             />
-            <button className="btn full-width" type="submit">Gui yeu cau</button>
+            <button className="btn full-width" type="submit">
+              Gửi yêu cầu
+            </button>
           </form>
         </section>
         <aside className="panel">
-          <h3>Yeu cau cua toi</h3>
+          <h3>Yêu cầu của tôi</h3>
           {error && <p className="muted">{error}</p>}
-          {items.length === 0 && <p className="muted">Chua co yeu cau nao.</p>}
+          {items.length === 0 && <p className="muted">Chưa có yêu cầu nào.</p>}
           {items.map((item) => (
             <article key={item.id} className="custom-card">
               <div className="row-between">
                 <strong>{item.title}</strong>
-                <span className={`badge ${item.status === "ACCEPTED" || item.status === "COMPLETED" ? "ok" : "off"}`}>
+                <span
+                  className={`badge ${
+                    item.status === "ACCEPTED" || item.status === "COMPLETED"
+                      ? "ok"
+                      : "off"
+                  }`}
+                >
                   {item.status}
                 </span>
               </div>
-              <p className="muted">Ngan sach: ${Number(item.budget).toFixed(2)}</p>
+              <p className="muted">Ngân sách: {formatVnd(item.budget)}</p>
               <p>{item.description}</p>
               <div className="quotes">
                 {(quotes[item.id] ?? []).map((q) => (
                   <div key={q.id} className="quote-row">
                     <span>
-                      ${Number(q.price).toFixed(2)} - {q.leadTimeDays} ngay
+                      {formatVnd(q.price)} - {q.leadTimeDays} ngày
                     </span>
                     <span className="muted small">{q.note}</span>
                     {item.status === "QUOTED" && (
                       <button className="btn" onClick={() => accept(item.id, q.id)}>
-                        Duyet
+                        Duyệt
                       </button>
                     )}
                   </div>
                 ))}
                 {(!quotes[item.id] || quotes[item.id].length === 0) && (
-                  <p className="muted small">Cho shop bao gia...</p>
+                  <p className="muted small">Đang chờ cửa hàng báo giá...</p>
                 )}
               </div>
             </article>
