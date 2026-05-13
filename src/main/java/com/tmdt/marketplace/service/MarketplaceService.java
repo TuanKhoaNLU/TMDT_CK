@@ -23,22 +23,22 @@ import java.util.concurrent.atomic.AtomicLong;
 public class MarketplaceService {
 
     private final List<Shop> shops = new CopyOnWriteArrayList<>(List.of(
-            new Shop(1L, "Artist", "Khoa Pham", "Thu tay rieng", "12 Ha Noi"),
-            new Shop(2L, "Moomoo", "Khang Pham", "Origami va giay thu cong", "45 Da Nang")
+            new Shop(1L, "Artist", "Khoa Phạm", "Xưởng thủ công, in ấn theo yêu cầu", "12 Hàng Bông, Hà Nội"),
+            new Shop(2L, "Moomoo", "Khang Phạm", "Origami và giấy thủ công", "45 Trần Phú, Đà Nẵng")
     ));
 
     private final List<User> users = new CopyOnWriteArrayList<>(List.of(
-            new User(1L, "Khoa Pham", "khoa@gmail.com", "SELLER", 1L),
-            new User(2L, "Khang Pham", "khang@gmail.com", "SELLER", 2L),
+            new User(1L, "Khoa Phạm", "khoa@gmail.com", "SELLER", 1L),
+            new User(2L, "Khang Phạm", "khang@gmail.com", "SELLER", 2L),
             new User(3L, "Elon Musk", "elon@gmail.com", "BUYER", null),
-            new User(4L, "Admin", "admin@test.com", "ADMIN", null)
+            new User(4L, "Quản trị viên", "admin@test.com", "ADMIN", null)
     ));
 
     private final List<Product> products = new CopyOnWriteArrayList<>(List.of(
-            new Product(1L, "Petals & Parchment", "Letterpress", 24.0, false, "/images/placeholder-1.png", "Luna Press", 1L, ProductStatus.ACTIVE, 25),
-            new Product(2L, "Golden Solstice", "Birthday", 36.0, true, "/images/placeholder-2.png", "Golden Fold", 2L, ProductStatus.ACTIVE, 12),
-            new Product(3L, "Indigo Dreams", "Anniversary", 48.0, true, "/images/placeholder-3.png", "Luna Press", 1L, ProductStatus.ACTIVE, 8),
-            new Product(4L, "Botanical Keepsake", "Thinking of You", 52.0, true, "/images/placeholder-4.png", "Golden Fold", 2L, ProductStatus.ACTIVE, 6)
+            new Product(1L, "Thiệp letterpress hoa cỏ", "Thiệp", 250_000.0, false, "/images/placeholder-1.png", "Khoa Phạm", 1L, ProductStatus.ACTIVE, 25),
+            new Product(2L, "Hộp quà sinh nhật Golden", "Sinh nhật", 380_000.0, true, "/images/placeholder-2.png", "Khang Phạm", 2L, ProductStatus.ACTIVE, 12),
+            new Product(3L, "Sổ tay Indigo Dreams", "Kỷ niệm", 500_000.0, true, "/images/placeholder-3.png", "Khoa Phạm", 1L, ProductStatus.ACTIVE, 8),
+            new Product(4L, "Bộ thiệp Botanical", "Tặng người thân", 550_000.0, true, "/images/placeholder-4.png", "Khang Phạm", 2L, ProductStatus.ACTIVE, 6)
     ));
 
     private final List<Order> orders = new CopyOnWriteArrayList<>(List.of(
@@ -46,13 +46,13 @@ public class MarketplaceService {
                     88292024L,
                     OrderStatus.CONFIRMED,
                     1L,
-                    "1284 Hai Ba Trung, Ha NoiS",
+                    "1284 Hai Bà Trưng, Hà Nội",
                     "Elon Musk",
                     List.of(
-                            new OrderItem(2L, "Hand-Carved Earthen Vase", 1, 320.0),
-                            new OrderItem(4L, "Botanical Keepsake", 1, 52.0)
+                            new OrderItem(2L, "Bình gốm tự khắc", 1, 3_200_000.0),
+                            new OrderItem(4L, "Bộ thiệp Botanical", 1, 550_000.0)
                     ),
-                    390.45
+                    3_750_000.0
             )
     ));
 
@@ -62,9 +62,9 @@ public class MarketplaceService {
                     3L,
                     "Elon Musk",
                     1L,
-                    "Wedding letterpress set",
-                    "Bo thiep cuoi mau dia trung, 80 set, in noi.",
-                    420.0,
+                    "Bộ thiệp cưới letterpress",
+                    "Bộ thiệp cưới màu đỏ trầm, 80 set, in nổi.",
+                    4_500_000.0,
                     CustomRequestStatus.PENDING,
                     null,
                     Instant.now().minusSeconds(3600)

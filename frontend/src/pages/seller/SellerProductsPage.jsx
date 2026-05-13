@@ -6,6 +6,7 @@ import {
   updateSellerProduct,
 } from "../../api.js";
 import { useSeller } from "../../context/useSeller.js";
+import { formatVnd } from "../../utils/format.js";
 
 const emptyForm = {
   name: "",
@@ -28,7 +29,7 @@ export default function SellerProductsPage() {
   const load = () => {
     fetchSellerProducts(shopId)
       .then(setItems)
-      .catch(() => setError("Khong tai duoc san pham."));
+      .catch(() => setError("Không tải được danh sách sản phẩm."));
   };
 
   useEffect(load, [shopId]);
@@ -68,64 +69,66 @@ export default function SellerProductsPage() {
       cancel();
       load();
     } catch {
-      setError("Khong luu duoc san pham.");
+      setError("Không lưu được sản phẩm.");
     }
   };
 
   const remove = async (id) => {
-    if (!confirm("Xoa san pham nay?")) return;
+    if (!confirm("Xoá sản phẩm này?")) return;
     try {
       await deleteSellerProduct(shopId, id);
       load();
     } catch {
-      setError("Khong xoa duoc san pham.");
+      setError("Không xoá được sản phẩm.");
     }
   };
 
   return (
     <main className="container page-padding">
       <div className="row-between">
-        <h1>San pham cua shop</h1>
-        <button className="btn" onClick={startCreate}>+ Them san pham</button>
+        <h1>Sản phẩm của cửa hàng</h1>
+        <button className="btn" onClick={startCreate}>
+          + Thêm sản phẩm
+        </button>
       </div>
       {error && <p className="panel">{error}</p>}
       {editing && (
         <form className="panel mb-16" onSubmit={save}>
-          <h3>{editing === "new" ? "Them moi" : `Cap nhat #${editing}`}</h3>
+          <h3>{editing === "new" ? "Thêm mới" : `Cập nhật #${editing}`}</h3>
           <input
-            placeholder="Ten san pham"
+            placeholder="Tên sản phẩm"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             required
           />
           <input
-            placeholder="Danh muc"
+            placeholder="Danh mục"
             value={form.category}
             onChange={(e) => setForm({ ...form, category: e.target.value })}
             required
           />
           <input
-            placeholder="Artisan"
+            placeholder="Nghệ nhân"
             value={form.artisan}
             onChange={(e) => setForm({ ...form, artisan: e.target.value })}
             required
           />
           <input
-            placeholder="Anh URL"
+            placeholder="Đường dẫn ảnh"
             value={form.image}
             onChange={(e) => setForm({ ...form, image: e.target.value })}
           />
           <input
             type="number"
-            step="0.01"
-            placeholder="Gia"
+            step="1"
+            placeholder="Giá (vnd)"
             value={form.price}
             onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
             required
           />
           <input
             type="number"
-            placeholder="Ton kho"
+            placeholder="Tồn kho"
             value={form.stock}
             onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
           />
@@ -135,23 +138,27 @@ export default function SellerProductsPage() {
               checked={form.customizable}
               onChange={(e) => setForm({ ...form, customizable: e.target.checked })}
             />{" "}
-            Cho phep custom
+            Cho phép đặt theo yêu cầu
           </label>
           <div className="row-gap mt-8">
-            <button type="submit" className="btn">Luu</button>
-            <button type="button" className="btn ghost" onClick={cancel}>Huy</button>
+            <button type="submit" className="btn">
+              Lưu
+            </button>
+            <button type="button" className="btn ghost" onClick={cancel}>
+              Huỷ
+            </button>
           </div>
         </form>
       )}
       <table className="data-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Ten</th>
-            <th>Danh muc</th>
-            <th>Gia</th>
-            <th>Ton</th>
-            <th>Trang thai</th>
+            <th>Mã</th>
+            <th>Tên</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Tồn</th>
+            <th>Trạng thái</th>
             <th></th>
           </tr>
         </thead>
@@ -161,7 +168,7 @@ export default function SellerProductsPage() {
               <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.category}</td>
-              <td>${Number(item.price).toFixed(2)}</td>
+              <td>{formatVnd(item.price)}</td>
               <td>{item.stock}</td>
               <td>
                 <span className={`badge ${item.status === "ACTIVE" ? "ok" : "off"}`}>
@@ -169,13 +176,21 @@ export default function SellerProductsPage() {
                 </span>
               </td>
               <td className="row-gap">
-                <button className="btn ghost" onClick={() => startEdit(item)}>Sua</button>
-                <button className="btn ghost" onClick={() => remove(item.id)}>Xoa</button>
+                <button className="btn ghost" onClick={() => startEdit(item)}>
+                  Sửa
+                </button>
+                <button className="btn ghost" onClick={() => remove(item.id)}>
+                  Xoá
+                </button>
               </td>
             </tr>
           ))}
           {items.length === 0 && (
-            <tr><td colSpan="7" className="muted">Chua co san pham.</td></tr>
+            <tr>
+              <td colSpan="7" className="muted">
+                Chưa có sản phẩm nào.
+              </td>
+            </tr>
           )}
         </tbody>
       </table>

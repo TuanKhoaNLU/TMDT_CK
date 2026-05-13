@@ -8,23 +8,35 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     fetchAdminDashboard()
       .then(setStats)
-      .catch(() => setError("Khong tai duoc thong ke."));
+      .catch(() => setError("Không tải được thống kê."));
   }, []);
 
-  if (error) return <main className="container page-padding"><p className="panel">{error}</p></main>;
-  if (!stats) return <main className="container page-padding"><p>Dang tai...</p></main>;
+  if (error) {
+    return (
+      <main className="container page-padding">
+        <p className="panel">{error}</p>
+      </main>
+    );
+  }
+  if (!stats) {
+    return (
+      <main className="container page-padding">
+        <p>Đang tải...</p>
+      </main>
+    );
+  }
 
   const cards = [
-    { label: "Nguoi dung", value: stats.totalUsers },
-    { label: "Cua hang", value: stats.totalShops },
-    { label: "San pham", value: stats.totalProducts },
-    { label: "Don hang", value: stats.totalOrders },
-    { label: "Custom Request", value: stats.totalCustomRequests },
+    { label: "Người dùng", value: stats.totalUsers },
+    { label: "Cửa hàng", value: stats.totalShops },
+    { label: "Sản phẩm", value: stats.totalProducts },
+    { label: "Đơn hàng", value: stats.totalOrders },
+    { label: "Yêu cầu đặt riêng", value: stats.totalCustomRequests },
   ];
 
   return (
     <main className="container page-padding">
-      <h1>Admin Dashboard</h1>
+      <h1>Tổng quan hệ thống</h1>
       <section className="grid stat-grid">
         {cards.map((card) => (
           <article className="card stat-card" key={card.label}>

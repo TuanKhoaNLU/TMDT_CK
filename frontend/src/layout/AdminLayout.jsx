@@ -1,9 +1,9 @@
 import { NavLink, Outlet } from "react-router-dom";
 
 const ADMIN_NAV = [
-  { to: "/admin", label: "Dashboard", end: true },
-  { to: "/admin/users", label: "Users" },
-  { to: "/admin/products", label: "Products" },
+  { to: "/admin", label: "Tổng quan", end: true },
+  { to: "/admin/users", label: "Người dùng" },
+  { to: "/admin/products", label: "Sản phẩm" },
 ];
 
 export default function AdminLayout() {
@@ -11,7 +11,7 @@ export default function AdminLayout() {
     <>
       <div className="container seller-shell">
         <div className="seller-header">
-          <h1 className="seller-title">Admin Console</h1>
+          <h1 className="seller-title">Trang quản trị</h1>
           <nav className="seller-nav">
             {ADMIN_NAV.map((item) => (
               <NavLink

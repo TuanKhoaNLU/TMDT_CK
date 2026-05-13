@@ -2,10 +2,10 @@ import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../context/useAuth.js";
 
 const SELLER_NAV = [
-  { to: "/seller", label: "Dashboard", end: true },
-  { to: "/seller/products", label: "Products" },
-  { to: "/seller/orders", label: "Orders" },
-  { to: "/seller/custom-requests", label: "Custom Requests" },
+  { to: "/seller", label: "Tổng quan", end: true },
+  { to: "/seller/products", label: "Sản phẩm" },
+  { to: "/seller/orders", label: "Đơn hàng" },
+  { to: "/seller/custom-requests", label: "Yêu cầu đặt riêng" },
 ];
 
 export default function SellerLayout() {
@@ -16,10 +16,10 @@ export default function SellerLayout() {
       <div className="container seller-shell">
         <div className="seller-header">
           <div>
-            <h1 className="seller-title">My Shop</h1>
+            <h1 className="seller-title">Cửa hàng của tôi</h1>
             {user && (
               <p className="muted small">
-                {user.fullName} - Shop #{user.shopId}
+                {user.fullName} - Cửa hàng #{user.shopId}
               </p>
             )}
           </div>

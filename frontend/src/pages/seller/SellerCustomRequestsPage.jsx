@@ -8,6 +8,7 @@ import {
   sellerCreateQuote,
 } from "../../api.js";
 import { useSeller } from "../../context/useSeller.js";
+import { formatVnd } from "../../utils/format.js";
 
 const emptyQuote = { price: 0, leadTimeDays: 7, note: "" };
 
@@ -33,7 +34,7 @@ export default function SellerCustomRequestsPage() {
         if (cancelled) return;
         setQuotes(Object.fromEntries(entries));
       } catch {
-        if (!cancelled) setError("Khong tai duoc custom request.");
+        if (!cancelled) setError("Không tải được yêu cầu đặt riêng.");
       }
     })();
     return () => {
@@ -59,7 +60,7 @@ export default function SellerCustomRequestsPage() {
       setActiveQuoteId(null);
       refresh();
     } catch {
-      setError("Khong tao duoc bao gia.");
+      setError("Không tạo được báo giá.");
     }
   };
 
@@ -68,7 +69,7 @@ export default function SellerCustomRequestsPage() {
       await rejectCustomRequest(id);
       refresh();
     } catch {
-      setError("Khong tu choi duoc yeu cau.");
+      setError("Không từ chối được yêu cầu.");
     }
   };
 
@@ -84,9 +85,9 @@ export default function SellerCustomRequestsPage() {
 
   return (
     <main className="container page-padding">
-      <h1>Custom Request</h1>
+      <h1>Yêu cầu đặt riêng</h1>
       {error && <p className="panel">{error}</p>}
-      {items.length === 0 && <p className="muted">Khong co yeu cau nao.</p>}
+      {items.length === 0 && <p className="muted">Không có yêu cầu nào.</p>}
       {items.map((item) => (
         <article className="panel mb-16" key={item.id}>
           <div className="row-between">
@@ -95,10 +96,16 @@ export default function SellerCustomRequestsPage() {
                 #{item.id} - {item.title}
               </h3>
               <p className="muted">
-                {item.buyerName} - Ngan sach: ${Number(item.budget).toFixed(2)}
+                {item.buyerName} - Ngân sách: {formatVnd(item.budget)}
               </p>
             </div>
-            <span className={`badge ${item.status === "ACCEPTED" || item.status === "COMPLETED" ? "ok" : "off"}`}>
+            <span
+              className={`badge ${
+                item.status === "ACCEPTED" || item.status === "COMPLETED"
+                  ? "ok"
+                  : "off"
+              }`}
+            >
               {item.status}
             </span>
           </div>
@@ -107,7 +114,9 @@ export default function SellerCustomRequestsPage() {
           <div className="quotes">
             {(quotes[item.id] ?? []).map((q) => (
               <div key={q.id} className="quote-row">
-                <span>${Number(q.price).toFixed(2)} - {q.leadTimeDays} ngay</span>
+                <span>
+                  {formatVnd(q.price)} - {q.leadTimeDays} ngày
+                </span>
                 <span className="muted small">{q.note}</span>
               </div>
             ))}
@@ -115,43 +124,59 @@ export default function SellerCustomRequestsPage() {
 
           {item.status === "PENDING" && (
             <div className="row-gap mt-8">
-              <button className="btn" onClick={() => openQuote(item.id)}>Bao gia</button>
-              <button className="btn ghost" onClick={() => reject(item.id)}>Tu choi</button>
+              <button className="btn" onClick={() => openQuote(item.id)}>
+                Báo giá
+              </button>
+              <button className="btn ghost" onClick={() => reject(item.id)}>
+                Từ chối
+              </button>
             </div>
           )}
           {item.status === "ACCEPTED" && (
-            <button className="btn mt-8" onClick={() => start(item.id)}>Bat dau lam</button>
+            <button className="btn mt-8" onClick={() => start(item.id)}>
+              Bắt đầu làm
+            </button>
           )}
           {item.status === "IN_PROGRESS" && (
-            <button className="btn mt-8" onClick={() => finish(item.id)}>Hoan thanh</button>
+            <button className="btn mt-8" onClick={() => finish(item.id)}>
+              Hoàn thành
+            </button>
           )}
 
           {activeQuoteId === item.id && (
             <form className="quote-form mt-8" onSubmit={submitQuote}>
               <input
                 type="number"
-                step="0.01"
-                placeholder="Gia"
+                step="1"
+                placeholder="Giá (vnd)"
                 value={quoteForm.price}
                 onChange={(e) => setQuoteForm({ ...quoteForm, price: e.target.value })}
                 required
               />
               <input
                 type="number"
-                placeholder="Lead time (ngay)"
+                placeholder="Thời gian hoàn thành (ngày)"
                 value={quoteForm.leadTimeDays}
-                onChange={(e) => setQuoteForm({ ...quoteForm, leadTimeDays: e.target.value })}
+                onChange={(e) =>
+                  setQuoteForm({ ...quoteForm, leadTimeDays: e.target.value })
+                }
                 required
               />
               <input
-                placeholder="Ghi chu"
+                placeholder="Ghi chú"
                 value={quoteForm.note}
                 onChange={(e) => setQuoteForm({ ...quoteForm, note: e.target.value })}
               />
               <div className="row-gap">
-                <button className="btn" type="submit">Gui bao gia</button>
-                <button type="button" className="btn ghost" onClick={() => setActiveQuoteId(null)}>
-                  Huy
+                <button className="btn" type="submit">
+                  Gửi báo giá
+                </button>
+                <button
+                  type="button"
+                  className="btn ghost"
+                  onClick={() => setActiveQuoteId(null)}
+                >
+                  Huỷ
                 </button>
               </div>
             </form>

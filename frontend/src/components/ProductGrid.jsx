@@ -1,3 +1,5 @@
+import { formatVnd } from "../utils/format.js";
+
 export default function ProductGrid({ products }) {
   return (
     <section id="product-list" className="grid">
@@ -9,7 +11,7 @@ export default function ProductGrid({ products }) {
             <p className="muted">
               {product.category} • {product.artisan}
             </p>
-            <strong>${Number(product.price).toFixed(2)}</strong>
+            <strong>{formatVnd(product.price)}</strong>
           </div>
         </article>
       ))}
