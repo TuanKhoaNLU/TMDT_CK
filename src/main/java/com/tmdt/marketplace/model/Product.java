@@ -7,6 +7,9 @@ public record Product(
         double price,
         boolean customizable,
         String image,
-        String artisan
+        String artisan,
+        Long shopId,
+        ProductStatus status,
+        int stock
 ) {
 }

@@ -4,7 +4,8 @@ import java.util.List;
 
 public record Order(
         Long id,
-        String status,
+        OrderStatus status,
+        Long shopId,
         String shippingAddress,
         String receiverName,
         List<OrderItem> items,
