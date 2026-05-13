@@ -1,27 +1,35 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/useAuth.js";
 
-const mainNav = [
-  { to: "/", label: "Gallery" },
+const NAV = [
+  { to: "/", label: "Gallery", end: true },
   { to: "/customize.html", label: "Custom Studio" },
   { to: "/checkout.html", label: "Checkout" },
   { to: "/order-history.html", label: "Orders" },
+  { to: "/seller", label: "My Shop" },
 ];
 
-const utilityNav = [
-  { to: "/wishlist.html", label: "Wishlist" },
-  { to: "/profile-settings.html", label: "Profile" },
-  { to: "/login.html", label: "Login" },
-];
-
-function LinkItem({ to, label }) {
+function LinkItem({ to, label, end }) {
   return (
-    <NavLink to={to} end={to === "/"} className={({ isActive }) => (isActive ? "active" : "")}>
+    <NavLink
+      to={to}
+      end={end ?? to === "/"}
+      className={({ isActive }) => (isActive ? "active" : "")}
+    >
       {label}
     </NavLink>
   );
 }
 
 export default function MainLayout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <>
       <header className="site-header">
@@ -31,17 +39,28 @@ export default function MainLayout() {
               ArtisanCurator
             </NavLink>
             <nav className="main-nav" aria-label="Main navigation">
-              {mainNav.map((item) => (
-                <LinkItem key={item.to} to={item.to} label={item.label} />
+              {NAV.map((item) => (
+                <LinkItem key={item.to} to={item.to} label={item.label} end={item.end} />
               ))}
             </nav>
           </div>
           <div className="nav-right">
             <div className="nav-divider"></div>
             <nav className="utility-nav" aria-label="Account navigation">
-              {utilityNav.map((item) => (
-                <LinkItem key={item.to} to={item.to} label={item.label} />
-              ))}
+              <LinkItem to="/wishlist.html" label="Wishlist" />
+              <LinkItem to="/profile-settings.html" label="Profile" />
+              {user ? (
+                <>
+                  <span className="muted small">
+                    {user.fullName} ({user.role})
+                  </span>
+                  <button className="btn ghost btn-link" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <LinkItem to="/login.html" label="Login" />
+              )}
             </nav>
           </div>
         </div>

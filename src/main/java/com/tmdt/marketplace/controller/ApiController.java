@@ -21,7 +21,7 @@ public class ApiController {
 
     @GetMapping("/products")
     public List<Product> products() {
-        return marketplaceService.getProducts();
+        return marketplaceService.getActiveProducts();
     }
 
     @GetMapping("/orders")
